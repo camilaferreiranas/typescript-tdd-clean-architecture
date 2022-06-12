@@ -61,4 +61,20 @@ describe('LocalLoadPurchase', () => {
         expect(cacheStorage.deleteKey).toBe('purchases');
         expect(purchases).toEqual([])
     })
+    test('Should return a empty list of purchases if cache is 3 days old ', async () => {
+        const currentDate = new Date();
+        const timestamp = new Date(currentDate);
+        timestamp.setDate(timestamp.getDate() - 3);
+        timestamp.setSeconds(timestamp.getSeconds());
+        const {cacheStorage, sut} = makeSut(currentDate)
+        cacheStorage.fetchResult = {
+            timestamp,
+            value: mockPurchases()
+        }
+        const purchases = await sut.loadAll();
+        expect(cacheStorage.actions).toEqual([CacheStoreSpy.Action.fetch, CacheStoreSpy.Action.delete]);
+        expect(cacheStorage.fetchKey).toBe('purchases');
+        expect(cacheStorage.deleteKey).toBe('purchases');
+        expect(purchases).toEqual([])
+    })
 })
