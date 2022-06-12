@@ -48,7 +48,7 @@ describe('LocalSavePurchases', () => {
         cacheStorage.simulateInsertError();
         const promise = sut.save(mockPurchases())
         expect(cacheStorage.messages).toEqual([CacheStoreSpy.Message.delete, CacheStoreSpy.Message.insert]);
-        expect(promise).rejects.toThrow();
+        await expect(promise).rejects.toThrow();
 
     })
 
